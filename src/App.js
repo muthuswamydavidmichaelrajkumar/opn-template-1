@@ -84,8 +84,7 @@ const OpnDocsUI = () => {
   useEffect(() => {
     if (sidebarItems[activePage]) {
       const firstCategory = Object.keys(sidebarItems[activePage])[0];
-      const firstSubCategory = Object.keys(sidebarItems[activePage][firstCategory])[0];
-      setActiveSubPage(firstSubCategory);
+      setActiveSubPage(firstCategory);
     } else {
       setActiveSubPage('');
     }
@@ -119,7 +118,10 @@ const OpnDocsUI = () => {
           <div key={currentPath} className="ml-4">
             <div 
               className="flex items-center cursor-pointer hover:text-blue-600"
-              onClick={() => toggleExpand(currentPath)}
+              onClick={() => {
+                toggleExpand(currentPath);
+                setActiveSubPage(key);
+              }}
             >
               {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               <span>{key}</span>
@@ -136,7 +138,7 @@ const OpnDocsUI = () => {
   };
 
   const renderSidebar = () => {
-    if (!sidebarOpen || activePage === 'API Playground' || !sidebarItems[activePage]) return null;
+    if (!sidebarOpen || activePage === 'API Playground') return null;
 
     return (
       <div className="w-64 bg-gray-100 p-4 h-screen overflow-y-auto">
@@ -167,7 +169,7 @@ const OpnDocsUI = () => {
     return (
       <div className="flex-1 p-6 overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">{activeSubPage || activePage}</h2>
-        <p>Content for {activeSubPage || activePage} goes here...</p>
+        <p>Content for {activeSubPage || activePage} in {activePage} goes here...</p>
         
         {activePage !== 'API Playground' && (
           <div className="mt-4">
@@ -261,7 +263,7 @@ const OpnDocsUI = () => {
       <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
         <div className="flex items-center">
           <h1 className="text-2xl font-bold mr-4">Opn Docs</h1>
-          <span className="text-lg">{activePage}</span>
+          <span className="text-lg">{activePage} {activeSubPage ? `- ${activeSubPage}` : ''}</span>
         </div>
         <div className="flex items-center">
           <div className="relative mr-4">
@@ -284,7 +286,11 @@ const OpnDocsUI = () => {
             className={`px-4 py-2 rounded ${
               activePage === item ? 'bg-white' : ''
             }`}
-            onClick={() => setActivePage(item)}
+            onClick={() => {
+              setActivePage(item);
+              setActiveSubPage('');
+              setExpandedItems({});
+            }}
           >
             {item}
           </button>
